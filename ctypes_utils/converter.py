@@ -1,22 +1,33 @@
 from __future__ import annotations
 
 import ctypes
-from typing import Any, overload
+from typing import Any, TypeVar, overload
 
+_T = TypeVar("_T")
+
+
+# fmt: off
+@overload
+def to_pytype(obj: ctypes.Structure) -> dict[str, Any]: ...
 
 @overload
-def to_pytype(obj: ctypes.Structure) -> dict[str, Any]:
-    ...
-
+def to_pytype(obj: ctypes.Array[ctypes._SimpleCData[_T]]) -> list[_T]: ...
 
 @overload
-def to_pytype(obj: ctypes.Array) -> list[Any]:
-    ...
-
+def to_pytype(obj: ctypes._Pointer[ctypes._SimpleCData[_T]]) -> _T | None: ...
 
 @overload
-def to_pytype(obj: Any) -> Any:
-    ...
+def to_pytype(obj: ctypes._SimpleCData[_T]) -> _T: ...
+
+@overload
+def to_pytype(obj: ctypes.Array[Any]) -> list[Any]: ...
+
+@overload
+def to_pytype(obj: ctypes._Pointer[Any]) -> Any | None: ...
+
+@overload
+def to_pytype(obj: Any) -> Any: ...
+# fmt: on
 
 
 def to_pytype(obj: Any) -> Any:

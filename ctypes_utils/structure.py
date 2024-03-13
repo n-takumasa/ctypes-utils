@@ -5,12 +5,6 @@ import typing
 
 from ctypes_utils.converter import to_pytype
 
-if typing.TYPE_CHECKING:
-    from collections.abc import Sequence
-    from ctypes import _CData
-
-_FieldsType: typing.TypeAlias = "Sequence[tuple[str, type[_CData]] | tuple[str, type[_CData], int]]"
-
 
 def _repr(obj: typing.Any) -> str:
     if isinstance(obj, ctypes.Array):
@@ -23,9 +17,7 @@ def _repr(obj: typing.Any) -> str:
     return repr(obj)
 
 
-class StructureInitMixin:
-    _fields_: typing.ClassVar[_FieldsType]
-
+class StructureInitMixin(ctypes.Structure):
     def __init__(self, *args, **kwargs):
         argkeys = set(kwargs.keys())
         fields = {f for f, *_ in self._fields_}
@@ -35,11 +27,12 @@ class StructureInitMixin:
         super().__init__(*args, **kwargs)
 
 
-class StructureReprMixin:
-    _fields_: typing.ClassVar[_FieldsType]
-
+class StructureReprMixin(ctypes.Structure):
     def __repr__(self):
-        args = ", ".join(f'{k}={_repr(getattr(self, k)) if self._show(k) else "..."}' for k, *_ in self._fields_)
+        args = ", ".join(
+            f'{k}={_repr(getattr(self, k)) if self._show(k) else "..."}'
+            for k, *_ in self._fields_
+        )
         return f"{self.__class__.__name__}({args})"
 
     def _show(self, field: str) -> bool:  # noqa: ARG002
@@ -47,11 +40,9 @@ class StructureReprMixin:
         return True
 
 
-class StructureTodictMixin:
-    _fields_: typing.ClassVar[_FieldsType]
-
+class StructureTodictMixin(ctypes.Structure):
     def to_dict(self) -> dict[str, typing.Any]:
-        return to_pytype(self)  # type: ignore
+        return to_pytype(self)
 
 
 class Structure(
@@ -60,4 +51,4 @@ class Structure(
     StructureTodictMixin,
     ctypes.Structure,
 ):
-    _fields_: typing.ClassVar[_FieldsType]
+    ...
