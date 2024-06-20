@@ -78,3 +78,13 @@ def test_nested():
         "inner": {"a": 0, "b": False},
         "inner_array": [{"a": 0, "b": False}, {"a": 0, "b": False}],
     }
+
+
+def test_bitfield():
+    class Int(ctypes.Structure):
+        _fields_ = [  # noqa: RUF012
+            ("u", ctypes.c_int32, 16),
+            ("l", ctypes.c_int32, 16),
+        ]
+
+    assert to_pytype(Int()) == {"u": 0, "l": 0}

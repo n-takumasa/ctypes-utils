@@ -32,7 +32,7 @@ def to_pytype(obj: Any) -> Any: ...
 
 def to_pytype(obj: Any) -> Any:
     if isinstance(obj, ctypes.Structure):
-        return {k: to_pytype(getattr(obj, k)) for k, _ in obj._fields_}  # noqa: SLF001
+        return {k: to_pytype(getattr(obj, k)) for k, *_ in obj._fields_}  # noqa: SLF001
     if isinstance(obj, ctypes.Array):
         return [to_pytype(obj[i]) for i in range(obj._length_)]  # noqa: SLF001
     if isinstance(obj, ctypes._Pointer):  # noqa: SLF001
