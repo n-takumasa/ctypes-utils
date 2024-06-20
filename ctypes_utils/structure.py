@@ -40,15 +40,21 @@ class StructureReprMixin(ctypes.Structure):
         return True
 
 
-class StructureTodictMixin(ctypes.Structure):
+class StructureToDictMixin(ctypes.Structure):
     def to_dict(self) -> dict[str, typing.Any]:
         return to_pytype(self)
+
+
+class StructureFromDictMixin(ctypes.Structure):
+    @classmethod
+    def from_dict(cls, obj: typing.Mapping[str, typing.Any]) -> typing.Self:
+        return cls(**obj)
 
 
 class Structure(
     StructureInitMixin,
     StructureReprMixin,
-    StructureTodictMixin,
+    StructureToDictMixin,
+    StructureFromDictMixin,
     ctypes.Structure,
-):
-    ...
+): ...

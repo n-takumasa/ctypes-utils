@@ -18,6 +18,18 @@ def test_structure():
     assert c.to_dict() == {"a": 42}
 
 
+def test_from_dict():
+    class C(Structure):
+        _fields_: typing.ClassVar = [
+            ("a", ctypes.c_int),
+        ]
+
+    c = C.from_dict({"a": 42})
+
+    assert repr(c) == "C(a=42)"
+    assert c.to_dict() == {"a": 42}
+
+
 def test_complex():
     class A(Structure):
         _fields_: typing.ClassVar = [
@@ -39,7 +51,12 @@ def test_complex():
 
     c = C()
     assert repr(c) == "C(a=A(a=0), b=[B(b=0), B(b=0)], c=0, ptr=None)"
-    assert c.to_dict() == {"a": {"a": 0}, "b": [{"b": 0}, {"b": 0}], "c": 0, "ptr": None}
+    assert c.to_dict() == {
+        "a": {"a": 0},
+        "b": [{"b": 0}, {"b": 0}],
+        "c": 0,
+        "ptr": None,
+    }
 
 
 def test_repr_show():
