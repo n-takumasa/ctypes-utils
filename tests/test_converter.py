@@ -9,7 +9,7 @@ from ctypes_utils import to_pytype
 @pytest.mark.parametrize(
     ("lhs", "rhs"),
     [
-        (ctypes.c_bool(False), False),  # noqa: FBT003
+        (ctypes.c_bool(False), False),
         (ctypes.c_byte(0), 0),
         (ctypes.c_short(0), 0),
         (ctypes.c_int(0), 0),
@@ -50,12 +50,12 @@ def test_array():
 
 def test_rect():
     class RECT(ctypes.Structure):
-        _fields_ = [  # noqa: RUF012
+        _fields_ = (
             ("left", ctypes.wintypes.LONG),
             ("top", ctypes.wintypes.LONG),
             ("right", ctypes.wintypes.LONG),
             ("bottom", ctypes.wintypes.LONG),
-        ]
+        )
 
     assert to_pytype(RECT(0, 1, 2, 3)) == {"left": 0, "top": 1, "right": 2, "bottom": 3}
     assert to_pytype(RECT(top=1)) == {"left": 0, "top": 1, "right": 0, "bottom": 0}
@@ -63,16 +63,16 @@ def test_rect():
 
 def test_nested():
     class Inner(ctypes.Structure):
-        _fields_ = [  # noqa: RUF012
+        _fields_ = (
             ("a", ctypes.c_int),
             ("b", ctypes.c_bool),
-        ]
+        )
 
     class Nested(ctypes.Structure):
-        _fields_ = [  # noqa: RUF012
+        _fields_ = (
             ("inner", Inner),
             ("inner_array", Inner * 2),
-        ]
+        )
 
     assert to_pytype(Nested()) == {
         "inner": {"a": 0, "b": False},
@@ -82,9 +82,9 @@ def test_nested():
 
 def test_bitfield():
     class Int(ctypes.Structure):
-        _fields_ = [  # noqa: RUF012
+        _fields_ = (
             ("u", ctypes.c_int32, 16),
             ("l", ctypes.c_int32, 16),
-        ]
+        )
 
     assert to_pytype(Int()) == {"u": 0, "l": 0}

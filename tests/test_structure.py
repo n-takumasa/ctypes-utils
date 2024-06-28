@@ -1,5 +1,4 @@
 import ctypes
-import typing
 
 import pytest
 
@@ -8,9 +7,7 @@ from ctypes_utils import Structure
 
 def test_structure():
     class C(Structure):
-        _fields_: typing.ClassVar = [
-            ("a", ctypes.c_int),
-        ]
+        _fields_ = (("a", ctypes.c_int),)
 
     c = C(a=42)
 
@@ -20,9 +17,7 @@ def test_structure():
 
 def test_from_dict():
     class C(Structure):
-        _fields_: typing.ClassVar = [
-            ("a", ctypes.c_int),
-        ]
+        _fields_ = (("a", ctypes.c_int),)
 
     c = C.from_dict({"a": 42})
 
@@ -32,22 +27,18 @@ def test_from_dict():
 
 def test_complex():
     class A(Structure):
-        _fields_: typing.ClassVar = [
-            ("a", ctypes.c_int),
-        ]
+        _fields_ = (("a", ctypes.c_int),)
 
     class B(Structure):
-        _fields_: typing.ClassVar = [
-            ("b", ctypes.c_int),
-        ]
+        _fields_ = (("b", ctypes.c_int),)
 
     class C(Structure):
-        _fields_: typing.ClassVar = [
+        _fields_ = (
             ("a", A),
             ("b", B * 2),
             ("c", ctypes.c_int),
             ("ptr", ctypes.POINTER(ctypes.c_int)),
-        ]
+        )
 
     c = C()
     assert repr(c) == "C(a=A(a=0), b=[B(b=0), B(b=0)], c=0, ptr=None)"
@@ -61,10 +52,10 @@ def test_complex():
 
 def test_repr_show():
     class C(Structure):
-        _fields_: typing.ClassVar = [
+        _fields_ = (
             ("a", ctypes.c_int),
             ("hidden", ctypes.c_int),
-        ]
+        )
 
         def _show(self, field: str) -> bool:
             return field not in {"hidden"}
@@ -76,9 +67,7 @@ def test_repr_show():
 
 def test_init_fails():
     class C(Structure):
-        _fields_: typing.ClassVar = [
-            ("a", ctypes.c_int),
-        ]
+        _fields_ = (("a", ctypes.c_int),)
 
     with pytest.raises(TypeError, match=r"not expected argument\(s\): .*"):
         C(b=1)

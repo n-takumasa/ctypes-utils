@@ -1,26 +1,69 @@
-[tool.poetry]
-name = "ctypes-utils"
-version = "0.1.0"
-description = ""
-license = "MIT"
-authors = ["Takumasa Nakamura <n.takumasa@gmail.com>"]
-readme = "README.md"
-packages = [{ include = "ctypes_utils" }]
-
-[tool.poetry.dependencies]
-python = ">=3.8"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
-pytest-cov = "^4.1.0"
-ruff = "^0.1.4"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ctypes-utils"
+version = "0.0.0"
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "CC0-1.0"
+keywords = []
+authors = [
+  { name = "Takumasa Nakamura", email = "n.takumasa@gmail.com" },
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/n-takumasa/ctypes-utils#readme"
+Issues = "https://github.com/n-takumasa/ctypes-utils/issues"
+Source = "https://github.com/n-takumasa/ctypes-utils"
+
+[tool.hatch.envs.default]
+extra-dependencies = [
+  "pytest",
+  "coverage",
+]
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/ctypes_utils tests}"
+
+[tool.coverage.run]
+source_pkgs = ["ctypes_utils", "tests"]
+branch = true
+parallel = true
+
+[tool.coverage.paths]
+ctypes-utils = ["src/ctypes_utils", "*/ctypes-utils/src/ctypes_utils"]
+tests = ["tests", "*/ctypes-utils/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
-  "if typing.TYPE_CHECKING",
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
   "@overload",
 ]
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff==0.4.5"]
+config-path = "ruff_defaults.toml"
+
+[tool.ruff]
+extend = "ruff_defaults.toml"
+target-version = "py38"
+line-length = 88

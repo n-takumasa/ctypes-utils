@@ -28,8 +28,6 @@ def to_pytype(obj: ctypes._Pointer[Any]) -> Any | None: ...
 @overload
 def to_pytype(obj: Any) -> Any: ...
 # fmt: on
-
-
 def to_pytype(obj: Any) -> Any:
     if isinstance(obj, ctypes.Structure):
         return {k: to_pytype(getattr(obj, k)) for k, *_ in obj._fields_}  # noqa: SLF001
